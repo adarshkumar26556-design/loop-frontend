@@ -36,12 +36,14 @@ import UserProfile from "./Pages/UserProfile";
 import GoogleSuccess from "./Pages/GoogleSuccess";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Pages/Home";
+import FollowRequests from "./Pages/FollowRequests";
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Public */}
-        
+        <Route path="/follow-requests" element={<FollowRequests />} />
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/google-success" element={<GoogleSuccess />} />
