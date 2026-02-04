@@ -8,17 +8,19 @@ export default function GoogleSuccess() {
   useEffect(() => {
     // Prevent running twice
     if (hasNavigated.current) return;
-    
+
     console.log("reachedddddd.........");
-    
+
     const params = new URLSearchParams(window.location.search);
     console.log("params::", params);
-    
+
     const token = params.get("token");
+    const userId = params.get("userId");
     console.log("token::", token);
-    
+
     if (token) {
-      localStorage.setItem("token", token); // Fixed typo: was "token2222::"
+      localStorage.setItem("token", token);
+      if (userId) localStorage.setItem("userId", userId);
       hasNavigated.current = true;
       navigate("/profile", { replace: true });
     } else {

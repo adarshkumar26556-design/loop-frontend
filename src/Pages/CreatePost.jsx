@@ -96,125 +96,10 @@
 //             {loading ? "Posting..." : "Post"}
 //           </button>
 //         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import postAPI from "../api/postApi";
-// import Navbar from "../components/Navbar";
-
-// export default function CreatePost() {
-//   const [image, setImage] = useState(null);
-//   const [preview, setPreview] = useState(null);
-//   const [caption, setCaption] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const navigate = useNavigate();
-
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-
-//     setImage(file);
-//     setPreview(URL.createObjectURL(file));
-//   };
-
-//   const handlePost = async () => {
-//     if (!image) {
-//       alert("Image is required");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-
-//       const formData = new FormData();
-//       formData.append("image", image);   // 🔥 must match upload.single("image")
-//       formData.append("caption", caption);
-
-//       await postAPI.post("/", formData, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       });
-
-//       navigate("/profile");
-//     } catch (error) {
-//       console.error("CREATE POST ERROR:", error.response?.data || error.message);
-//       alert(error.response?.data?.message || "Post failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Navbar />
-
-//       <div className="pt-20 flex justify-center">
-//         <div className="bg-[#e5e5e5] p-8 rounded-lg w-[420px] text-center">
-
-//           {/* IMAGE PICKER */}
-//           <label className="block cursor-pointer">
-//             <input
-//               type="file"
-//               accept="image/*"
-//               hidden
-//               onChange={handleImageChange}
-//             />
-
-//             <div className="bg-white rounded-xl h-[260px] flex items-center justify-center border-dashed border-2">
-//               {preview ? (
-//                 <img
-//                   src={preview}
-//                   alt="preview"
-//                   className="h-full w-full object-cover rounded-xl"
-//                 />
-//               ) : (
-//                 <div className="text-gray-400">
-//                   <div className="text-4xl mb-2">🖼</div>
-//                   <p>Drop your image</p>
-//                 </div>
-//               )}
-//             </div>
-//           </label>
-
-//           {/* CAPTION */}
-//           <div className="mt-6 text-left">
-//             <label className="font-semibold">Description</label>
-//             <textarea
-//               value={caption}
-//               onChange={(e) => setCaption(e.target.value)}
-//               maxLength={360}
-//               placeholder="The start of a wonderful story..."
-//               className="w-full mt-2 h-24 rounded-lg p-3 border resize-none"
-//             />
-//             <p className="text-right text-xs text-gray-400">
-//               {caption.length}/360
-//             </p>
-//           </div>
-
-//           {/* POST BUTTON */}
-//           <button
-//             onClick={handlePost}
-//             disabled={loading}
-//             className="mt-6 w-32 h-10 bg-blue-500 text-white rounded-md font-medium"
-//           >
-//             {loading ? "Posting..." : "Post"}
-//           </button>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, ChevronLeft, ImagePlus } from "lucide-react";
+import { ImagePlus, X, ChevronLeft } from "lucide-react";
 import postAPI from "../api/postApi";
-import Navbar from "../components/Navbar";
 
 /* -------- IMAGE RESIZE UTILITY -------- */
 const resizeImage = (file, maxSize = 1080, quality = 0.8) => {
@@ -322,7 +207,7 @@ export default function CreatePost() {
 
   return (
     <>
-      <Navbar />
+
 
       <div className="max-w-xl mx-auto bg-white">
         {/* HEADER */}

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SplitText from "./SplitText";
 import API from "../api/api";
 
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -30,6 +31,9 @@ export default function Login() {
       }
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.user._id);
+
+
       navigate("/profile");
 
     } catch (err) {
@@ -96,7 +100,7 @@ export default function Login() {
         <div className="my-6 text-sm text-gray-400">- or -</div>
 
         <a
-          href="http://localhost:3000/api/auth/google"
+          href="http://localhost:5000/api/auth/google"
           onClick={() => localStorage.clear()}
           className="flex items-center justify-center gap-3 w-full h-12 border rounded-full"
         >

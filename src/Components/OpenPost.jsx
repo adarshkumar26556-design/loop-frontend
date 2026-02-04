@@ -2,7 +2,7 @@
 // import { useState } from "react";
 // import postAPI from "../api/postApi";
 
-// export default function OpenPost({ post, currentUserId, onClose }) {
+import API from "../api/api";
 //   if (!post) return null;
 
 //   // 🔥 SAFE NORMALIZATION
@@ -90,14 +90,12 @@
 import {
   X,
   Heart,
-  MessageCircle,
   Bookmark,
   MoreHorizontal,
-  Trash2,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import postAPI from "../api/postApi";
 
 /* IMAGE NORMALIZER */
@@ -117,13 +115,19 @@ export default function OpenPost({ post, currentUserId, onClose }) {
   const [index, setIndex] = useState(0);
 
   const isLiked = likes.includes(currentUserId);
-  const isOwner = post.user?._id === currentUserId;
 
   const images = Array.isArray(post.images)
     ? post.images.map(getImageSrc)
     : [];
 
-  /* ❤️ OPTIMISTIC LIKE */
+  const isOwner =
+    currentUserId &&
+    (post.user?._id === currentUserId ||
+      post.user === currentUserId ||
+      post.user?._id?.toString() === currentUserId ||
+      post.user?.toString() === currentUserId);
+
+  /* ❤️ LIKE */
   const toggleLike = async () => {
     setLikes((prev) =>
       prev.includes(currentUserId)
@@ -139,14 +143,14 @@ export default function OpenPost({ post, currentUserId, onClose }) {
     }
   };
 
-  /* 💬 OPTIMISTIC COMMENT */
+  /* 💬 COMMENT */
   const handleComment = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
 
     const temp = {
       _id: Date.now(),
-      user: { username: "You" },
+      user: { username: "posting..." },
       text,
     };
 
@@ -154,10 +158,59 @@ export default function OpenPost({ post, currentUserId, onClose }) {
     setText("");
 
     try {
-      const res = await postAPI.post(`/${post._id}/comment`, { text });
+      const res = await postAPI.post(`/${post._id}/comments`, { text });
       setComments(res.data);
     } catch {
       setComments(post.comments || []);
+    }
+  };
+
+  /* ❤️ LIKE COMMENT */
+  const handleLikeComment = async (commentId) => {
+    setComments((prev) =>
+      prev.map((c) => {
+        if (c._id === commentId) {
+          const isLiked = c.likes?.includes(currentUserId);
+          return {
+            ...c,
+            likes: isLiked
+              ? c.likes.filter((id) => id !== currentUserId)
+              : [...(c.likes || []), currentUserId],
+          };
+        }
+        return c;
+      })
+    );
+
+    try {
+      const token = localStorage.getItem("token");
+      await postAPI.put(`/${post._id}/comments/${commentId}/like`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch (error) {
+      console.error("Like comment failed", error);
+    }
+  };
+
+  /* 💾 SAVE POST */
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    // Check if saved
+    API.get("/users/getmyprofile").then((res) => {
+      if (res.data.savedPosts && res.data.savedPosts.includes(post._id)) {
+        setIsSaved(true);
+      }
+    });
+  }, [post._id]);
+
+  const handleSave = async () => {
+    try {
+      // Optimistic
+      setIsSaved((prev) => !prev);
+      await API.put(`/users/${post._id}/save`);
+    } catch {
+      setIsSaved((prev) => !prev);
     }
   };
 
@@ -168,6 +221,7 @@ export default function OpenPost({ post, currentUserId, onClose }) {
     try {
       await postAPI.delete(`/${post._id}`);
       onClose();
+      window.location.reload();
     } catch (err) {
       console.error("DELETE POST ERROR:", err);
     }
@@ -175,14 +229,14 @@ export default function OpenPost({ post, currentUserId, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
+      className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white max-w-5xl w-full h-[90vh] flex relative"
+        className="bg-white w-full max-w-6xl h-[90vh] flex overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* IMAGE CAROUSEL */}
+        {/* LEFT: IMAGE */}
         <div
           className="flex-1 bg-black flex items-center justify-center relative"
           onDoubleClick={toggleLike}
@@ -198,113 +252,172 @@ export default function OpenPost({ post, currentUserId, onClose }) {
           {images.length > 1 && (
             <>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIndex((i) => Math.max(i - 1, 0));
-                }}
-                className="absolute left-4 text-white"
+                onClick={() => setIndex((i) => Math.max(i - 1, 0))}
+                className="absolute left-4 text-white/70 hover:text-white"
               >
-                <ChevronLeft size={32} />
+                <ChevronLeft size={30} />
               </button>
-
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIndex((i) =>
-                    Math.min(i + 1, images.length - 1)
-                  );
-                }}
-                className="absolute right-4 text-white"
+                onClick={() =>
+                  setIndex((i) => Math.min(i + 1, images.length - 1))
+                }
+                className="absolute right-4 text-white/70 hover:text-white"
               >
-                <ChevronRight size={32} />
+                <ChevronRight size={30} />
               </button>
             </>
           )}
         </div>
 
-        {/* DETAILS */}
-        <div className="w-[400px] flex flex-col border-l">
-         {/* HEADER */}
-<div className="p-4 border-b flex justify-between items-center relative z-50">
-  <b>{post.user?.username}</b>
+        {/* RIGHT: DETAILS */}
+        <div className="w-[400px] md:w-[500px] flex flex-col bg-white border-l">
+          {/* HEADER */}
+          <div className="p-4 border-b flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img
+                src={
+                  post.user?.avatar ||
+                  "https://www.seekpng.com/png/detail/966-9665493_my-profile-icon-blank-profile-image-circle.png"
+                }
+                className="w-8 h-8 rounded-full object-cover border"
+              />
+              <span className="font-semibold text-sm">
+                {post.user?.username}
+              </span>
+            </div>
 
-  {isOwner && (
-    <div className="relative z-50">
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowMenu((prev) => !prev);
-        }}
-        className="z-50"
-      >
-        <MoreHorizontal />
-      </button>
-
-      {showMenu && (
-        <div
-          className="absolute right-0 mt-2 bg-white border rounded shadow w-32 z-50"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeletePost();
-            }}
-            className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 flex items-center gap-2"
-          >
-            <Trash2 size={16} />
-            Delete
-          </button>
-        </div>
-      )}
-    </div>
-  )}
-</div>
+            {isOwner && (
+              <div className="relative">
+                <MoreHorizontal
+                  className="cursor-pointer"
+                  onClick={() => setShowMenu(!showMenu)}
+                />
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+                    <button
+                      onClick={handleDeletePost}
+                      className="w-full text-left px-4 py-3 text-red-500 hover:bg-gray-50 text-sm font-medium"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setShowMenu(false)}
+                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* COMMENTS */}
-          <div className="flex-1 p-4 overflow-y-auto">
-            {comments.map((c) => (
-              <p key={c._id} className="mb-2">
-                <b>{c.user?.username}</b> {c.text}
-              </p>
-            ))}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {post.caption && (
+              <div className="flex gap-3">
+                <img
+                  src={post.user?.avatar}
+                  className="w-8 h-8 rounded-full border"
+                />
+                <div className="text-sm">
+                  <span className="font-semibold mr-2">
+                    {post.user?.username}
+                  </span>
+                  {post.caption}
+                </div>
+              </div>
+            )}
+
+            {comments.map((c, i) => {
+              const isLiked = c.likes?.includes(currentUserId);
+              return (
+                <div key={i} className="flex justify-between items-start group">
+                  <div className="flex gap-3">
+                    <img
+                      src={c.user?.avatar || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
+                      className="w-8 h-8 rounded-full border object-cover"
+                    />
+                    <div className="text-sm">
+                      <p>
+                        <span className="font-semibold mr-2">
+                          {c.user?.username || "User"}
+                        </span>
+                        {c.text}
+                      </p>
+                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                        <span>{new Date(c.createdAt || Date.now()).toLocaleDateString()}</span>
+                        {c.likes?.length > 0 && (
+                          <span>{c.likes.length} likes</span>
+                        )}
+                        <button className="font-semibold">Reply</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Heart
+                    size={14}
+                    className={`cursor-pointer mt-1 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-400 hover:text-gray-600"}`}
+                    onClick={() => handleLikeComment(c._id)}
+                  />
+                </div>
+              )
+            })}
           </div>
 
-          {/* ACTIONS */}
-          <div className="border-t p-3">
-            <Heart
-              onClick={toggleLike}
-              fill={isLiked ? "#ed4956" : "none"}
-              stroke={isLiked ? "#ed4956" : "black"}
-              className="cursor-pointer"
-            />
-            <p className="font-semibold text-sm mt-1">
-              {likes.length} likes
-            </p>
-
-            <form onSubmit={handleComment} className="flex mt-2">
-              <input
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="flex-1 border px-2"
-                placeholder="Add a comment..."
+          {/* FOOTER */}
+          <div className="border-t p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Heart
+                size={26}
+                onClick={toggleLike}
+                className={`cursor-pointer ${isLiked
+                  ? "fill-red-500 text-red-500"
+                  : "text-black hover:text-gray-500"
+                  }`}
               />
-              <button className="text-blue-500 px-2">Post</button>
-            </form>
-          </div>
-        </div>
+              <Bookmark
+                size={26}
+                onClick={handleSave}
+                className={`cursor-pointer hover:text-gray-500 ${isSaved ? "fill-black text-black" : ""
+                  }`}
+              />
+            </div>
 
-        {/* CLOSE */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          className="absolute top-4 right-4 text-white"
-        >
-          <X size={28} />
-        </button>
+            <div className="font-semibold text-sm">
+              {likes.length} likes
+            </div>
+          </div>
+
+          {/* ADD COMMENT */}
+          <form
+            onSubmit={handleComment}
+            className="border-t p-3 flex items-center"
+          >
+            <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="flex-1 outline-none text-sm"
+              placeholder="Add a comment..."
+            />
+            <button
+              type="submit"
+              disabled={!text.trim()}
+              className="text-blue-500 font-semibold text-sm disabled:opacity-50 ml-2"
+            >
+              Post
+            </button>
+          </form>
+        </div>
       </div>
+
+      {/* CLOSE */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-white"
+      >
+        <X size={30} />
+      </button>
     </div>
   );
 }

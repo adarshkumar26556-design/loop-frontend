@@ -1,16 +1,15 @@
-// src/api/postApi.js
 import axios from "axios";
 
 const postAPI = axios.create({
-  baseURL: "http://localhost:3000/api/posts",
+  baseURL: "http://localhost:5000/api/posts",
 });
 
-postAPI.interceptors.request.use((config) => {
+postAPI.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    req.headers.Authorization = `Bearer ${token}`;
   }
-  return config;
+  return req;
 });
 
 export default postAPI;
