@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const postAPI = axios.create({
-  baseURL: "http://localhost:5000/api/posts",
+  baseURL: `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/posts`,
 });
 
 postAPI.interceptors.request.use((req) => {
