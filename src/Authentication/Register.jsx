@@ -30,7 +30,8 @@ export default function Register() {
 
       navigate("/profile");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      console.error("Registration Error:", err.response?.data);
+      setError(err.response?.data?.message || "Registration failed. Try a different username/email.");
     } finally {
       setLoading(false);
     }
