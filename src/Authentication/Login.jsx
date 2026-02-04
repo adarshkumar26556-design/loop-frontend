@@ -100,7 +100,7 @@ export default function Login() {
         <div className="my-6 text-sm text-gray-400">- or -</div>
 
         <a
-          href={`${import.meta.env.VITE_API_URL || "https://loop-backend1.onrender.com/api"}/auth/google`}
+          href="https://loop-backend1.onrender.com/api/auth/google"
           onClick={() => localStorage.clear()}
           className="flex items-center justify-center gap-3 w-full h-12 border rounded-full"
         >
