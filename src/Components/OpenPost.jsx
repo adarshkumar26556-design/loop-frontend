@@ -2,7 +2,7 @@
 // import { useState } from "react";
 // import postAPI from "../api/postApi";
 
-import API from "../api/api";
+import API from "../API/api";
 //   if (!post) return null;
 
 //   // 🔥 SAFE NORMALIZATION
@@ -96,7 +96,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import postAPI from "../api/postApi";
+import postAPI from "../API/postApi";
 
 /* IMAGE NORMALIZER */
 const getImageSrc = (img) => {

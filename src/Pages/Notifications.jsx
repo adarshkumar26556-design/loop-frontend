@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { User, MessageCircle, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/api";
+import API from "../API/api";
 import socket from "../socket";
 
 export default function Notifications() {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Mail, Lock, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import SplitText from "./SplitText";
-import API from "../api/api";
+import API from "../API/api";
 
 
 export default function Login() {

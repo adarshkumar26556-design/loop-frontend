@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, Search } from "lucide-react";
-import API from "../api/api";
+import API from "../API/api";
 
 export default function NewChatModal({ onClose, onSelect }) {
     const [search, setSearch] = useState("");

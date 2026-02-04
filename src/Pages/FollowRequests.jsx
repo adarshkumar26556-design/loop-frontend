@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { User, X, Check } from "lucide-react";
-import API from "../api/api"; // Ensure you have this configured
+import API from "../API/api"; // Ensure you have this configured
 import { useNavigate } from "react-router-dom";
 
 export default function FollowRequests() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ChatSidebar from "../Components/ChatSidebar";
 import ChatWindow from "../Components/ChatWindow";
-import API from "../api/api";
+import API from "../API/api";
 import socket from "../socket";
 
 export default function Messages() {

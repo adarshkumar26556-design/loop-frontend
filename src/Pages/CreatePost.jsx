@@ -99,7 +99,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ImagePlus, X, ChevronLeft } from "lucide-react";
-import postAPI from "../api/postApi";
+import postAPI from "../API/postApi";
 
 /* -------- IMAGE RESIZE UTILITY -------- */
 const resizeImage = (file, maxSize = 1080, quality = 0.8) => {

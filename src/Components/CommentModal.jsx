@@ -115,7 +115,7 @@
 // }
 import { useEffect, useState } from "react";
 import { X, Heart } from "lucide-react";
-import postAPI from "../api/postApi";
+import postAPI from "../API/postApi";
 import LikesListModal from "./LikesListModal";
 
 export default function CommentModal({ post, onClose, onPostUpdate }) {

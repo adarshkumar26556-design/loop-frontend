@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Camera, Check } from "lucide-react";
-import API from "../api/api";
+import API from "../API/api";
 
 export default function EditProfile() {
   const navigate = useNavigate();

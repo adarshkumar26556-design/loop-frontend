@@ -1,7 +1,7 @@
 import { MoreVertical, X } from "lucide-react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import API from "../api/api";
+import API from "../API/api";
 
 export default function PostModal({
   post,

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Search as SearchIcon, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/api";
+import API from "../API/api";
 
 const DEFAULT_AVATAR =
     "https://www.seekpng.com/png/detail/966-9665493_my-profile-icon-blank-profile-image-circle.png";

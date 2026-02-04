@@ -11,7 +11,7 @@ import {
     Menu,
     Instagram
 } from "lucide-react";
-import API from "../api/api";
+import API from "../API/api";
 import socket from "../socket";
 
 export default function Sidebar() {

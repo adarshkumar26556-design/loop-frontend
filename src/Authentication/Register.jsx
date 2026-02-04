@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Mail, User, Lock, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../api/api";
+import API from "../API/api";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);

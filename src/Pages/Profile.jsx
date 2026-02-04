@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Grid, Bookmark, Layers } from "lucide-react";
-import API from "../api/api";
-import postAPI from "../api/postApi";
+import API from "../API/api";
+import postAPI from "../API/postApi";
 import OpenPost from "../Components/OpenPost";
 
 export default function Profile() {

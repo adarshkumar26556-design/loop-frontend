@@ -199,8 +199,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Lock } from "lucide-react";
-import API from "../api/api";
-import PostModal from "../components/PostModal";
+import API from "../API/api";
+import PostModal from "../Components/PostModal";
 
 export default function UserProfile() {
   const { username } = useParams();

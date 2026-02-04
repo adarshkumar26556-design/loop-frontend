@@ -7,8 +7,8 @@ import {
   Bookmark,
   MoreHorizontal,
 } from "lucide-react";
-import postAPI from "../api/postApi";
-import API from "../api/api";
+import postAPI from "../API/postApi";
+import API from "../API/api";
 import CommentModal from "../Components/CommentModal";
 import LikesListModal from "../Components/LikesListModal";
 

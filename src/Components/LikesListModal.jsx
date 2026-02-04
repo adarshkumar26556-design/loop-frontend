@@ -1,8 +1,8 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import postAPI from "../api/postApi";
-import API from "../api/api"; // Ensure this matches your file structure
+import postAPI from "../API/postApi";
+import API from "../API/api"; // Ensure this matches your file structure
 
 export default function LikesListModal({ postId, commentId, onClose }) {
     const [users, setUsers] = useState([]);
