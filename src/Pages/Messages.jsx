@@ -97,7 +97,7 @@ export default function Messages() {
     };
 
     return (
-        <div className="h-screen bg-white flex flex-col md:ml-0">
+        <div className="h-screen pt-14 md:pt-0 bg-white flex flex-col md:ml-0">
             <div className="flex-1 w-full flex border-gray-200 overflow-hidden h-full">
                 <ChatSidebar
                     conversations={conversations}
@@ -110,6 +110,7 @@ export default function Messages() {
                     messages={messages}
                     onSendMessage={sendMessage}
                     loading={loading}
+                    onBack={() => setSelectedUser(null)}
                 />
             </div>
         </div>

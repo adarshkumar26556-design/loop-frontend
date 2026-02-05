@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
-import { Image, Heart, Smile } from "lucide-react";
+import { Image, Heart, Smile, ArrowLeft } from "lucide-react";
 
-export default function ChatWindow({ user, messages, onSendMessage, loading }) {
+export default function ChatWindow({ user, messages, onSendMessage, loading, onBack }) {
     const [text, setText] = useState("");
     const endRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -26,7 +26,7 @@ export default function ChatWindow({ user, messages, onSendMessage, loading }) {
 
     if (!user) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-white">
+            <div className="hidden md:flex flex-1 items-center justify-center bg-white h-full">
                 <div className="text-center">
                     <div className="w-24 h-24 border-2 border-black rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
@@ -41,10 +41,13 @@ export default function ChatWindow({ user, messages, onSendMessage, loading }) {
     }
 
     return (
-        <div className="flex-1 flex flex-col bg-white h-full">
+        <div className="flex flex-col bg-white h-full w-full md:flex-1">
             {/* Header */}
             <div className="border-b p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
+                    <button onClick={onBack} className="md:hidden mr-2">
+                        <ArrowLeft className="w-6 h-6" />
+                    </button>
                     <img
                         src={user.avatar || "https://www.seekpng.com/png/detail/966-9665493_my-profile-icon-blank-profile-image-circle.png"}
                         alt="avatar"
@@ -94,7 +97,7 @@ export default function ChatWindow({ user, messages, onSendMessage, loading }) {
             </div>
 
             {/* Input */}
-            <div className="p-4 m-4 border rounded-full flex items-center gap-3">
+            <div className="p-2 m-2 md:p-4 md:m-4 border rounded-full flex items-center gap-3">
                 <Smile className="text-gray-500 cursor-pointer" />
                 <form onSubmit={handleSend} className="flex-1">
                     <input

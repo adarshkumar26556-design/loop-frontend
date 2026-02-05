@@ -7,7 +7,7 @@ export default function ChatSidebar({ conversations, currentUser, onSelectUser, 
     const [showNewChat, setShowNewChat] = useState(false);
 
     return (
-        <div className="w-1/3 border-r h-full bg-white flex flex-col">
+        <div className={`border-r h-full bg-white flex-col ${selectedUserId ? "hidden md:flex" : "flex w-full"} md:w-1/3`}>
             {/* Header */}
             <div className="p-4 border-b flex items-center justify-between">
                 <h2 className="text-xl font-bold flex items-center gap-2">
